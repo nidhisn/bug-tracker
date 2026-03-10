@@ -8,7 +8,11 @@ function App() {
       "https://opensheet.elk.sh/1Ud2vm97__ZEqmTQvdYzCOTNj3kGgjoxzJsZucSALThQ/Bugs",
     )
       .then((response) => response.json())
-      .then((data) => setBugs(data));
+      .then((data) => {
+        console.log("DATA:", data);
+        setBugs(data);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   return (
