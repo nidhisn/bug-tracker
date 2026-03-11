@@ -1,47 +1,102 @@
 .sidebar {
-  width: 220px;
-  background: #ffffff;
-  color: #172b4d;
-  padding: 16px 12px;
+  width: 260px;
+  background: linear-gradient(180deg, #0b1020 0%, #070b16 100%);
+  color: #e6e8ef;
+  padding: 18px 14px;
   box-sizing: border-box;
-  border-right: 1px solid #dfe1e6;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 18px 6px;
 }
 
-.title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 16px;
+.brandIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6d5efc, #4b3df0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #ffffff;
 }
 
-.navSectionTitle {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6b778c;
-  margin: 12px 0 4px 4px;
+.brandName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #ffffff;
 }
 
 .navList {
   list-style: none;
-  padding: 0;
+  padding: 6px 0 0 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .navItem {
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #42526e;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: rgba(230, 232, 239, 0.92);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.06s ease;
+  user-select: none;
+}
+
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navItem:active {
+  transform: translateY(1px);
 }
 
 .navItemActive {
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #0052cc;
-  background: #e9f2ff;
-  border-left: 3px solid #0052cc;
+  font-size: 0.98rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #5f54ff, #4b3df0);
 }
 
+.navItemDisabled {
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(230, 232, 239, 0.45);
+  cursor: not-allowed;
+}
+
+.icon {
+  flex: 0 0 auto;
+  color: rgba(230, 232, 239, 0.65);
+}
+
+.navItemActive .icon {
+  color: #ffffff;
+}

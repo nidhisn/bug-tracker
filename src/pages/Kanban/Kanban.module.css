@@ -1,0 +1,129 @@
+.page {
+  padding: 16px 18px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pageTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #172b4d;
+  margin: 2px 0 4px 0;
+}
+
+.pageSubtitle {
+  font-size: 0.85rem;
+  color: #6b778c;
+  margin: 0;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.column {
+  border-radius: 16px;
+  background: #f4f5f7;
+  border: 1px solid #dfe1e6;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 170px);
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+
+.columnTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #172b4d;
+}
+
+.columnCount {
+  font-size: 0.75rem;
+  color: #6b778c;
+}
+
+.columnBody {
+  padding: 4px 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.card {
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #dfe1e6;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.06);
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #172b4d;
+  margin-bottom: 4px;
+}
+
+.cardMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+}
+
+.cardKey {
+  color: #6b778c;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+.priority {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #6b778c;
+}
+
+.module {
+  font-weight: 500;
+}
+
+.assignee {
+  font-weight: 500;
+}
+
+@media (max-width: 1040px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+}
+

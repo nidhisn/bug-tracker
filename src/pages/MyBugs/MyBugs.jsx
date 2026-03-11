@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchBugs } from "../../services/sheetService";
-import BugTable from "../../Components/Table/BugTable";
+import BugTable from "../../components/Table/BugTable";
 import styles from "./MyBugs.module.css";
 
 // For now, we use a hard-coded developer name.

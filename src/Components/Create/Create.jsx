@@ -25,7 +25,7 @@ function Create({ open, onClose }) {
     e.preventDefault();
     // UI-only for now (no sheet write yet)
     // eslint-disable-next-line no-console
-    console.log("Create issue:", form);
+    console.log("Create bug:", form);
     onClose();
   };
 
@@ -111,7 +111,7 @@ function Create({ open, onClose }) {
               className={styles.control}
               value={form.summary}
               onChange={onChange("summary")}
-              placeholder="Short summary of the issue"
+              placeholder="Short summary of the bug"
               required
             />
           </div>

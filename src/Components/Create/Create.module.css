@@ -151,3 +151,156 @@
   }
 }
 
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 30, 66, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 64px 16px 16px 16px;
+  z-index: 1000;
+}
+
+.modal {
+  width: 720px;
+  max-width: 100%;
+  background: #ffffff;
+  border: 1px solid #dfe1e6;
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(9, 30, 66, 0.25);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #172b4d;
+}
+
+.close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #5e6c84;
+}
+
+.close:hover {
+  background: #f4f5f7;
+}
+
+.form {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: #6b778c;
+}
+
+.req {
+  color: #de350b;
+  font-weight: 700;
+}
+
+.control {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  color: #172b4d;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.control:focus,
+.textarea:focus {
+  border-color: #4c9aff;
+  box-shadow: 0 0 0 3px rgba(76, 154, 255, 0.25);
+}
+
+.textarea {
+  min-height: 90px;
+  resize: vertical;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  color: #172b4d;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.secondary {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  color: #172b4d;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.secondary:hover {
+  background: #f4f5f7;
+}
+
+.primary {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #0052cc;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.primary:hover {
+  background: #0747a6;
+}
+
+@media (max-width: 720px) {
+  .overlay {
+    padding-top: 24px;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+}
+

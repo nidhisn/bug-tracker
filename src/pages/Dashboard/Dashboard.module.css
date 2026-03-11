@@ -1,13 +1,69 @@
 .page {
-  padding: 16px 18px;
+  padding: 20px 22px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.headerText {
+  max-width: 420px;
+}
+
+.headerTitle {
+  margin: 0 0 4px 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.headerSubtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b778c;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rangeSelect {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  font-size: 0.85rem;
+  color: #172b4d;
+}
+
+.generateButton {
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #4f46e5;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.generateButton:hover {
+  background: #4338ca;
 }
 
 .section {
-  margin-top: 12px;
-  padding: 14px 16px;
-  border-radius: 14px;
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
   background: #ffffff;
   border: 1px solid #dfe1e6;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.06);
 }
 
 .sectionHeader {
@@ -28,3 +84,119 @@
   color: #6b778c;
 }
 
+.grid2 {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+}
+
+.chartBox {
+  height: 260px;
+  width: 100%;
+}
+
+.chartTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.chartTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #172b4d;
+}
+
+.chartMenu {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  cursor: pointer;
+  color: #97a0af;
+}
+
+.chartMenu:hover {
+  background: #f4f5f7;
+}
+
+.barList {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding-top: 10px;
+  padding-bottom: 6px;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 70px 1fr 38px;
+  align-items: center;
+  gap: 10px;
+}
+
+.barLabel {
+  font-size: 0.78rem;
+  color: #6b778c;
+}
+
+.barTrack {
+  height: 28px;
+  border-radius: 999px;
+  background: #f4f5f7;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: #0b1020;
+  width: 0%;
+}
+
+.barValue {
+  font-size: 0.78rem;
+  color: #6b778c;
+  text-align: right;
+}
+
+.legend {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #6b778c;
+  font-size: 0.8rem;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dotPurple,
+.dotGreen {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.dotPurple {
+  background: #635bff;
+}
+
+.dotGreen {
+  background: #10b981;
+}
+
+@media (max-width: 980px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,36 +1,81 @@
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 20px;
 }
 
 .card {
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 18px 20px;
+  border-radius: 16px;
   background: #ffffff;
   border: 1px solid #dfe1e6;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.06);
 }
 
 .label {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #6b778c;
 }
 
 .value {
-  margin-top: 4px;
-  font-size: 1.3rem;
-  font-weight: 600;
+  margin-top: 6px;
+  font-size: 1.9rem;
+  font-weight: 700;
   color: #172b4d;
 }
 
-.pill {
-  margin-top: 4px;
-  display: inline-block;
-  padding: 2px 8px;
-  font-size: 0.7rem;
-  border-radius: 999px;
-  background: #e3fcef;
-  color: #006644;
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
 }
 
+.iconBox {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.tone_purple {
+  background: #635bff;
+}
+
+.tone_green {
+  background: #22c55e;
+}
+
+.tone_amber {
+  background: #f59e0b;
+}
+
+.tone_red {
+  background: #ef4444;
+}
+
+.deltaRow {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+}
+
+.deltaUp {
+  color: #006644;
+  font-weight: 700;
+}
+
+.deltaDown {
+  color: #de350b;
+  font-weight: 700;
+}
+
+.deltaText {
+  color: #97a0af;
+}

@@ -1,35 +1,22 @@
 import { useEffect, useState } from "react";
 import { fetchBugs } from "../../services/sheetService";
-import Filters from "../../Components/Filters/Filters";
-import BugTable from "../../Components/Table/BugTable";
+import BugTable from "../../components/Table/BugTable";
 import styles from "./Bugs.module.css";
 
-function applyFilters(bugs, filters) {
+function filterByTab(bugs, tab) {
+  if (tab === "all") return bugs;
   return bugs.filter((bug) => {
-    const search = (filters.search || "").toLowerCase();
-    if (search) {
-      const haystack = `${bug.Bug_ID || ""} ${bug.Title || ""}`.toLowerCase();
-      if (!haystack.includes(search)) {
-        return false;
-      }
-    }
-
-    if (filters.status && String(bug.Status || "") !== filters.status) {
-      return false;
-    }
-    if (filters.priority && String(bug.Priority || "") !== filters.priority) {
-      return false;
-    }
-    if (filters.assignee && String(bug.Assigned_To || "") !== filters.assignee) {
-      return false;
-    }
+    const status = String(bug.Status || "").toLowerCase();
+    if (tab === "open") return status === "open";
+    if (tab === "in-progress") return status === "in progress";
+    if (tab === "done") return status === "closed" || status === "done";
     return true;
   });
 }
 
-function Bugs() {
+function Bugs({ onNewBug }) {
   const [bugs, setBugs] = useState([]);
-  const [filters, setFilters] = useState({});
+  const [tab, setTab] = useState("all");
 
   useEffect(() => {
     fetchBugs()
@@ -40,13 +27,54 @@ function Bugs() {
       });
   }, []);
 
-  const filteredBugs = applyFilters(bugs, filters);
+  const filteredBugs = filterByTab(bugs, tab);
 
   return (
     <div className={styles.page}>
-      <div className={styles.title}>All Bugs</div>
-      <Filters bugs={bugs} filters={filters} onChange={setFilters} />
-      <BugTable bugs={filteredBugs} />
+      <div className={styles.headerRow}>
+        <div>
+          <div className={styles.pageTitle}>Bugs</div>
+          <p className={styles.pageSubtitle}>
+            Manage and track all project bugs.
+          </p>
+        </div>
+        <div className={styles.headerActions}>
+          <button type="button" className={styles.secondaryButton}>
+            Filter
+          </button>
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={onNewBug}
+          >
+            + New Bug
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.tabs}>
+        {[
+          { id: "all", label: "All" },
+          { id: "open", label: "Open" },
+          { id: "in-progress", label: "In Progress" },
+          { id: "done", label: "Done" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            className={
+              tab === t.id ? styles.tabButtonActive : styles.tabButton
+            }
+            onClick={() => setTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className={styles.card}>
+        <BugTable bugs={filteredBugs} />
+      </div>
     </div>
   );
 }

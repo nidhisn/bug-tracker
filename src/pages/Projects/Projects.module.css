@@ -1,0 +1,103 @@
+.page {
+  padding: 16px 18px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pageTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #172b4d;
+  margin: 2px 0 4px 0;
+}
+
+.pageSubtitle {
+  font-size: 0.85rem;
+  color: #6b778c;
+  margin: 0;
+}
+
+.primaryButton {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #635bff;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  background: #4f46e5;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #dfe1e6;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.06);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.projectName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #172b4d;
+}
+
+.projectKey {
+  font-size: 0.75rem;
+  color: #6b778c;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e0edff;
+  color: #1d4ed8;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 0.8rem;
+  color: #4b5563;
+  margin: 6px 0 10px 0;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.metaLabel {
+  color: #6b778c;
+}
+
+.metaValue {
+  color: #172b4d;
+  font-weight: 600;
+}
+
