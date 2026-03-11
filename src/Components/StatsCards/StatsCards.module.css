@@ -1,0 +1,36 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #dfe1e6;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: #6b778c;
+}
+
+.value {
+  margin-top: 4px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #172b4d;
+}
+
+.pill {
+  margin-top: 4px;
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  border-radius: 999px;
+  background: #e3fcef;
+  color: #006644;
+}
+

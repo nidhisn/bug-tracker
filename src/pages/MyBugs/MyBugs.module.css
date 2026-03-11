@@ -1,0 +1,17 @@
+.page {
+  padding: 16px 18px;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #172b4d;
+}
+
+.caption {
+  font-size: 0.8rem;
+  color: #6b778c;
+  margin-bottom: 8px;
+}
+

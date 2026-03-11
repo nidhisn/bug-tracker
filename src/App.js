@@ -1,57 +1,33 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Sidebar from "./Components/Sidebar/Sidebar";
+import Header from "./Components/Header/Header";
+import Create from "./Components/Create/Create";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Bugs from "./pages/Bugs/Bugs";
+import MyBugs from "./pages/MyBugs/MyBugs";
+import "./App.css";
 
 function App() {
-  const [bugs, setBugs] = useState([]);
+  const [page, setPage] = useState("dashboard");
+  const [createOpen, setCreateOpen] = useState(false);
 
-  useEffect(() => {
-    fetch(
-      "https://opensheet.elk.sh/1Ud2vm97__ZEqmTQvdYzCOTNj3kGgjoxzJsZucSALThQ/Bugs",
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("DATA:", data);
-        setBugs(data);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+  let content;
+  if (page === "bugs") {
+    content = <Bugs />;
+  } else if (page === "my-bugs") {
+    content = <MyBugs />;
+  } else {
+    content = <Dashboard />;
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Bug Tracker</h2>
-
-      <table border="1" cellPadding="10">
-        <thead>
-          <tr>
-            <th>Bug ID</th>
-            <th>Title</th>
-            <th>Module</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Assigned To</th>
-            <th>Reported By</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {bugs.length === 0 ? (
-            <tr>
-              <td colSpan="7">Loading bugs...</td>
-            </tr>
-          ) : (
-            bugs.map((bug, index) => (
-              <tr key={index}>
-                <td>{bug.Bug_ID}</td>
-                <td>{bug.Title}</td>
-                <td>{bug.Module}</td>
-                <td>{bug.Priority}</td>
-                <td>{bug.Status}</td>
-                <td>{bug.Assigned_To}</td>
-                <td>{bug.Reported_By}</td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+    <div className="App">
+      <Sidebar currentPage={page} onChangePage={setPage} />
+      <div className="App-main">
+        <Header onOpenCreate={() => setCreateOpen(true)} />
+        {content}
+      </div>
+      <Create open={createOpen} onClose={() => setCreateOpen(false)} />
     </div>
   );
 }

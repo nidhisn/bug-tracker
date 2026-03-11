@@ -1,0 +1,47 @@
+.sidebar {
+  width: 220px;
+  background: #ffffff;
+  color: #172b4d;
+  padding: 16px 12px;
+  box-sizing: border-box;
+  border-right: 1px solid #dfe1e6;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.navSectionTitle {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b778c;
+  margin: 12px 0 4px 4px;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #42526e;
+}
+
+.navItemActive {
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #0052cc;
+  background: #e9f2ff;
+  border-left: 3px solid #0052cc;
+}
+

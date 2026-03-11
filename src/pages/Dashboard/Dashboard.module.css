@@ -1,0 +1,30 @@
+.page {
+  padding: 16px 18px;
+}
+
+.section {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #dfe1e6;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #172b4d;
+}
+
+.sectionCaption {
+  font-size: 0.75rem;
+  color: #6b778c;
+}
+
