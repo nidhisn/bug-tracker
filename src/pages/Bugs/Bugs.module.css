@@ -90,10 +90,38 @@
 
 .card {
   margin-top: 14px;
-  padding: 0;
+  padding: 14px 16px 0 16px;
   border-radius: 18px;
   background: #ffffff;
   border: 1px solid #dfe1e6;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.06);
+}
+
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.filterSearch {
+  flex: 1;
+  min-width: 200px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid #dfe1e6;
+  background: #f7f8fa;
+  font-size: 0.85rem;
+  color: #172b4d;
+}
+
+.filterSelect {
+  min-width: 150px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  font-size: 0.8rem;
+  color: #172b4d;
 }
 

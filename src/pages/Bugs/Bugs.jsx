@@ -17,6 +17,12 @@ function filterByTab(bugs, tab) {
 function Bugs({ onNewBug }) {
   const [bugs, setBugs] = useState([]);
   const [tab, setTab] = useState("all");
+  const [filters, setFilters] = useState({
+    search: "",
+    priority: "",
+    assignee: "",
+  });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchBugs()
@@ -27,7 +33,42 @@ function Bugs({ onNewBug }) {
       });
   }, []);
 
-  const filteredBugs = filterByTab(bugs, tab);
+  const afterTab = filterByTab(bugs, tab);
+
+  const filteredBugs = afterTab.filter((bug) => {
+    const search = filters.search.trim().toLowerCase();
+    if (search) {
+      const haystack = `${bug.Bug_ID || ""} ${bug.Title || ""}`.toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+
+    if (filters.priority) {
+      if (String(bug.Priority || "").toLowerCase() !== filters.priority)
+        return false;
+    }
+
+    if (filters.assignee) {
+      if (String(bug.Assigned_To || "").toLowerCase() !== filters.assignee)
+        return false;
+    }
+
+    return true;
+  });
+
+  const priorities = Array.from(
+    new Set(
+      bugs
+        .map((b) => (b.Priority ? String(b.Priority).trim() : ""))
+        .filter(Boolean),
+    ),
+  );
+  const assignees = Array.from(
+    new Set(
+      bugs
+        .map((b) => (b.Assigned_To ? String(b.Assigned_To).trim() : ""))
+        .filter(Boolean),
+    ),
+  );
 
   return (
     <div className={styles.page}>
@@ -39,7 +80,11 @@ function Bugs({ onNewBug }) {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <button type="button" className={styles.secondaryButton}>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={() => setShowFilters((v) => !v)}
+          >
             Filter
           </button>
           <button
@@ -73,6 +118,50 @@ function Bugs({ onNewBug }) {
       </div>
 
       <div className={styles.card}>
+        {showFilters && (
+          <div className={styles.filtersRow}>
+            <input
+              type="text"
+              className={styles.filterSearch}
+              placeholder="Search by title or ID..."
+              value={filters.search}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, search: e.target.value }))
+              }
+            />
+
+            <select
+              className={styles.filterSelect}
+              value={filters.priority}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, priority: e.target.value }))
+              }
+            >
+              <option value="">All priorities</option>
+              {priorities.map((p) => (
+                <option key={p} value={p.toLowerCase()}>
+                  {p}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className={styles.filterSelect}
+              value={filters.assignee}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, assignee: e.target.value }))
+              }
+            >
+              <option value="">All assignees</option>
+              {assignees.map((a) => (
+                <option key={a} value={a.toLowerCase()}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <BugTable bugs={filteredBugs} />
       </div>
     </div>
