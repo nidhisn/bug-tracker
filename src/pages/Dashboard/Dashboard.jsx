@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { fetchBugs } from "../../services/sheetService";
+import { getCounts, getSeverity, getTrend } from "../../services/dashboardApi";
 import StatsCards from "../../components/StatsCards/StatsCards";
 import styles from "./Dashboard.module.css";
 
 function linePath(values, w, h, pad) {
+  if (!values.length) {
+    return "";
+  }
   const maxY = Math.max(...values);
   const minY = Math.min(...values);
   const x = (i) => pad + (i * (w - pad * 2)) / (values.length - 1);
@@ -15,42 +18,44 @@ function linePath(values, w, h, pad) {
 }
 
 function Dashboard() {
-  const [bugs, setBugs] = useState([]);
+  const [counts, setCounts] = useState(null);
+  const [severity, setSeverity] = useState(null);
+  const [trend, setTrend] = useState([]);
   const [range, setRange] = useState("last7");
 
   useEffect(() => {
-    fetchBugs()
-      .then(setBugs)
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
+    getCounts()
+      .then((res) => setCounts(res.data))
+      .catch(console.error);
+
+    getSeverity()
+      .then((res) => setSeverity(res.data))
+      .catch(console.error);
+
+    getTrend()
+      .then((res) => setTrend(res.data))
+      .catch(console.error);
   }, []);
 
-  const filteredBugs = bugs;
-
-  const severityCounts = (() => {
-    const counts = { High: 0, Medium: 0, Low: 0 };
-    for (const b of filteredBugs) {
-      const p = String(b.Priority || "").toLowerCase();
-      if (p === "high") counts.High += 1;
-      else if (p === "medium") counts.Medium += 1;
-      else if (p === "low") counts.Low += 1;
-    }
-    return counts;
-  })();
+  const severityCounts = {
+    High: severity?.high || 0,
+    Medium: severity?.medium || 0,
+    Low: severity?.low || 0,
+  };
   const severityMax = Math.max(1, ...Object.values(severityCounts));
 
-  const trendNew = [12, 18, 15, 21, 28, 17, 10];
-  const trendResolved = [8, 11, 20, 18, 24, 15, 8];
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const trendNew = trend.map((t) => t.created || 0);
+  const trendResolved = trend.map((t) => t.resolved || 0);
+  const days = trend.map((t) =>
+    new Date(t.day).toLocaleDateString("en-US", { weekday: "short" }),
+  );
   const w = 720;
   const h = 230;
   const pad = 26;
 
   const allY = [...trendNew, ...trendResolved];
-  const chartMax = Math.max(...allY);
-  const chartMin = Math.min(...allY);
+  const chartMax = allY.length ? Math.max(...allY) : 1;
+  const chartMin = allY.length ? Math.min(...allY) : 0;
   const tickCount = 5;
   const ticks = Array.from({ length: tickCount }, (_, i) => {
     const t = tickCount - 1 - i;
@@ -58,7 +63,8 @@ function Dashboard() {
       chartMin + (t * (chartMax - chartMin)) / Math.max(1, tickCount - 1);
     return Math.round(v);
   });
-  const x = (i) => pad + (i * (w - pad * 2)) / (days.length - 1);
+  const x = (i) =>
+    days.length <= 1 ? w / 2 : pad + (i * (w - pad * 2)) / (days.length - 1);
   const y = (v) =>
     pad + ((chartMax - v) * (h - pad * 2)) / Math.max(1, chartMax - chartMin);
 
@@ -88,7 +94,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <StatsCards bugs={filteredBugs} />
+      <StatsCards counts={counts} />
 
       <div className={styles.grid2}>
         <section className={styles.section}>
