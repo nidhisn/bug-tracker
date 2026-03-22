@@ -79,11 +79,15 @@ function Icon({ name }) {
   return null;
 }
 
-function StatsCards({ counts }) {
-  const total = counts?.total || 0;
-  const resolved = counts?.resolved || 0;
-  const pending = counts?.pending || 0;
-  const overdue = counts?.overdue || 0;
+function StatsCards({ bugs }) {
+  const total = bugs.length;
+  const pending = bugs.filter(
+    (b) => String(b.Status || "").toLowerCase() !== "closed",
+  ).length;
+  const resolved = total - pending;
+  const overdue = bugs.filter(
+    (b) => String(b.Priority || "").toLowerCase() === "critical",
+  ).length;
 
   const cards = [
     {
