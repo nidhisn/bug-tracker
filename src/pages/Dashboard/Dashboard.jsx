@@ -94,7 +94,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <StatsCards counts={counts} />
+      <StatsCards bugs={counts || []} />
 
       <div className={styles.grid2}>
         <section className={styles.section}>
