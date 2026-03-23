@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: "https://bugtracker-ux9x.onrender.com/api",
 });
 
 export default api;
