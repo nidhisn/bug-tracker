@@ -1,74 +1,122 @@
 import { useEffect, useState } from "react";
 import { fetchBugs } from "../../services/sheetService";
+import { updateBugStatus } from "../../api/bugService";
 import BugTable from "../../components/Table/BugTable";
+import BugFilter from "../../components/BugFilter/BugFilter";
 import styles from "./Bugs.module.css";
 
-function filterByTab(bugs, tab) {
-  if (tab === "all") return bugs;
-  return bugs.filter((bug) => {
-    const status = String(bug.Status || "").toLowerCase();
-    if (tab === "open") return status === "open";
-    if (tab === "in-progress") return status === "in progress";
-    if (tab === "done") return status === "closed" || status === "done";
-    return true;
-  });
-}
+const CURRENT_DEVELOPER = "Me";
+const FILTER_LABELS = {
+  module: "Module",
+  priority: "Priority",
+  status: "Status",
+  assignedTo: "Assigned To",
+};
 
-function Bugs({ onNewBug }) {
+function Bugs({ onNewBug, refreshKey = 0 }) {
   const [bugs, setBugs] = useState([]);
-  const [tab, setTab] = useState("all");
-  const [filters, setFilters] = useState({
-    search: "",
+  const [activeView, setActiveView] = useState("all");
+
+  // ✅ applied filters (used for filtering table)
+  const [appliedFilters, setAppliedFilters] = useState({
+    module: "",
     priority: "",
-    assignee: "",
+    status: "",
+    assignedTo: "",
   });
+
   const [showFilters, setShowFilters] = useState(false);
 
+  const activeFilterEntries = Object.entries(appliedFilters).filter(
+    ([, value]) => String(value || "").trim() !== "",
+  );
+
   useEffect(() => {
-    fetchBugs()
-      .then(setBugs)
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
-  }, []);
+    fetchBugs().then(setBugs).catch(console.error);
+  }, [refreshKey]);
 
-  const afterTab = filterByTab(bugs, tab);
-
-  const filteredBugs = afterTab.filter((bug) => {
-    const search = filters.search.trim().toLowerCase();
-    if (search) {
-      const haystack = `${bug.Bug_ID || ""} ${bug.Title || ""}`.toLowerCase();
-      if (!haystack.includes(search)) return false;
+  // ✅ filter logic
+  const filteredBugs = bugs.filter((bug) => {
+    if (
+      appliedFilters.module &&
+      String(bug.Module || "").toLowerCase() !==
+        appliedFilters.module.toLowerCase()
+    ) {
+      return false;
     }
 
-    if (filters.priority) {
-      if (String(bug.Priority || "").toLowerCase() !== filters.priority)
-        return false;
+    if (
+      appliedFilters.priority &&
+      String(bug.Priority || "").toLowerCase() !==
+        appliedFilters.priority.toLowerCase()
+    ) {
+      return false;
     }
 
-    if (filters.assignee) {
-      if (String(bug.Assigned_To || "").toLowerCase() !== filters.assignee)
-        return false;
+    if (
+      appliedFilters.status &&
+      String(bug.Status || "").toLowerCase() !==
+        appliedFilters.status.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      appliedFilters.assignedTo &&
+      String(bug.Assigned_To || "").toLowerCase() !==
+        appliedFilters.assignedTo.toLowerCase()
+    ) {
+      return false;
     }
 
     return true;
   });
 
-  const priorities = Array.from(
-    new Set(
-      bugs
-        .map((b) => (b.Priority ? String(b.Priority).trim() : ""))
-        .filter(Boolean),
-    ),
+  const myBugs = filteredBugs.filter(
+    (bug) =>
+      String(bug.Assigned_To || "").toLowerCase() ===
+      CURRENT_DEVELOPER.toLowerCase(),
   );
-  const assignees = Array.from(
-    new Set(
-      bugs
-        .map((b) => (b.Assigned_To ? String(b.Assigned_To).trim() : ""))
-        .filter(Boolean),
-    ),
-  );
+
+  const visibleBugs = activeView === "my" ? myBugs : filteredBugs;
+
+  const handleStatusChange = async (bug, nextStatus) => {
+    const bugId = bug.id || bug.Id || bug.Bug_ID;
+    if (!bugId) {
+      return;
+    }
+
+    const previousStatus = bug.Status;
+
+    setBugs((currentBugs) =>
+      currentBugs.map((currentBug) =>
+        (currentBug.id || currentBug.Id || currentBug.Bug_ID) === bugId
+          ? { ...currentBug, Status: nextStatus }
+          : currentBug,
+      ),
+    );
+
+    try {
+      await updateBugStatus(bugId, nextStatus);
+    } catch (error) {
+      setBugs((currentBugs) =>
+        currentBugs.map((currentBug) =>
+          (currentBug.id || currentBug.Id || currentBug.Bug_ID) === bugId
+            ? { ...currentBug, Status: previousStatus }
+            : currentBug,
+        ),
+      );
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
+  const handleRemoveFilter = (filterKey) => {
+    setAppliedFilters((currentFilters) => ({
+      ...currentFilters,
+      [filterKey]: "",
+    }));
+  };
 
   return (
     <div className={styles.page}>
@@ -79,94 +127,85 @@ function Bugs({ onNewBug }) {
             Manage and track all project bugs.
           </p>
         </div>
+
         <div className={styles.headerActions}>
           <button
-            type="button"
             className={styles.secondaryButton}
             onClick={() => setShowFilters((v) => !v)}
           >
-            Filter
+            {showFilters ? "Close Filter" : "Filter"}
           </button>
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={onNewBug}
-          >
+
+          <button className={styles.primaryButton} onClick={onNewBug}>
             + New Bug
           </button>
         </div>
       </div>
 
-      <div className={styles.tabs}>
-        {[
-          { id: "all", label: "All" },
-          { id: "open", label: "Open" },
-          { id: "in-progress", label: "In Progress" },
-          { id: "done", label: "Done" },
-        ].map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={
-              tab === t.id ? styles.tabButtonActive : styles.tabButton
-            }
-            onClick={() => setTab(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div className={styles.tabs} aria-label="Bug views">
+        <button
+          type="button"
+          className={
+            activeView === "all" ? styles.tabButtonActive : styles.tabButton
+          }
+          onClick={() => setActiveView("all")}
+        >
+          All Bugs
+        </button>
+        <button
+          type="button"
+          className={
+            activeView === "my" ? styles.tabButtonActive : styles.tabButton
+          }
+          onClick={() => setActiveView("my")}
+        >
+          My Bugs
+        </button>
       </div>
+
+      {activeView === "my" && (
+        <p className={styles.viewHint}>
+          You can change status only for bugs assigned to "{CURRENT_DEVELOPER}".
+        </p>
+      )}
+
+      {activeFilterEntries.length > 0 && (
+        <div className={styles.activeFilters} aria-label="Applied filters">
+          {activeFilterEntries.map(([key, value]) => (
+            <button
+              key={key}
+              type="button"
+              className={styles.filterChip}
+              onClick={() => handleRemoveFilter(key)}
+            >
+              <span className={styles.filterChipText}>
+                {FILTER_LABELS[key]}: {value}
+              </span>
+              <span className={styles.filterChipClose}>x</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className={styles.card}>
         {showFilters && (
-          <div className={styles.filtersRow}>
-            <input
-              type="text"
-              className={styles.filterSearch}
-              placeholder="Search by title or ID..."
-              value={filters.search}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, search: e.target.value }))
-              }
+          <div className={styles.filterOverlay}>
+            <BugFilter
+              filters={appliedFilters}
+              onApply={(filters) => setAppliedFilters(filters)}
+              onClose={() => setShowFilters(false)}
             />
-
-            <select
-              className={styles.filterSelect}
-              value={filters.priority}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, priority: e.target.value }))
-              }
-            >
-              <option value="">All priorities</option>
-              {priorities.map((p) => (
-                <option key={p} value={p.toLowerCase()}>
-                  {p}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className={styles.filterSelect}
-              value={filters.assignee}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, assignee: e.target.value }))
-              }
-            >
-              <option value="">All assignees</option>
-              {assignees.map((a) => (
-                <option key={a} value={a.toLowerCase()}>
-                  {a}
-                </option>
-              ))}
-            </select>
           </div>
         )}
 
-        <BugTable bugs={filteredBugs} />
+        <BugTable
+          bugs={visibleBugs}
+          canEditStatus={activeView === "my"}
+          onStatusChange={handleStatusChange}
+        />
       </div>
     </div>
   );
 }
 
 export default Bugs;
-

@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
-import { getCounts, getSeverity, getTrend } from "../../services/dashboardApi";
+import { useEffect, useMemo, useState } from "react";
+import { fetchBugs } from "../../services/sheetService";
 import StatsCards from "../../components/StatsCards/StatsCards";
 import styles from "./Dashboard.module.css";
 
 function linePath(values, w, h, pad) {
   if (!values.length) {
     return "";
+  }
+  if (values.length === 1) {
+    const x = w / 2;
+    const y = h / 2;
+    return `M ${x} ${y} L ${x} ${y}`;
   }
   const maxY = Math.max(...values);
   const minY = Math.min(...values);
@@ -17,36 +22,220 @@ function linePath(values, w, h, pad) {
     .join(" ");
 }
 
+function parseBugDate(bug) {
+  const candidates = [
+    bug.Created_At,
+    bug.createdAt,
+    bug.created_at,
+    bug.CreatedAt,
+    bug.Date,
+    bug.Created_On,
+    bug.Reported_On,
+    bug.timestamp,
+  ];
+
+  for (const value of candidates) {
+    if (!value) {
+      continue;
+    }
+    const date = new Date(value);
+    if (!Number.isNaN(date.getTime())) {
+      return date;
+    }
+  }
+
+  return null;
+}
+
+function isResolvedStatus(status) {
+  const normalized = String(status || "").toLowerCase();
+  return normalized === "closed" || normalized === "done";
+}
+
+function isPendingStatus(status) {
+  return !isResolvedStatus(status);
+}
+
+function percentageChange(current, previous) {
+  if (previous === 0 && current === 0) {
+    return "0%";
+  }
+  if (previous === 0) {
+    return "+100%";
+  }
+
+  const delta = ((current - previous) / previous) * 100;
+  const rounded = Math.round(delta * 10) / 10;
+  return `${rounded > 0 ? "+" : ""}${rounded}%`;
+}
+
+function getRangeDays(range) {
+  if (range === "today") {
+    return 1;
+  }
+  if (range === "last30") {
+    return 30;
+  }
+  return 7;
+}
+
+function startOfDay(date) {
+  const next = new Date(date);
+  next.setHours(0, 0, 0, 0);
+  return next;
+}
+
+function buildDaySeries(days) {
+  const today = startOfDay(new Date());
+  return Array.from({ length: days }, (_, index) => {
+    const day = new Date(today);
+    day.setDate(today.getDate() - (days - index - 1));
+    return day;
+  });
+}
+
 function Dashboard() {
-  const [counts, setCounts] = useState(null);
-  const [severity, setSeverity] = useState(null);
-  const [trend, setTrend] = useState([]);
+  const [bugs, setBugs] = useState([]);
   const [range, setRange] = useState("last7");
 
   useEffect(() => {
-    getCounts()
-      .then((res) => setCounts(res.data))
-      .catch(console.error);
-
-    getSeverity()
-      .then((res) => setSeverity(res.data))
-      .catch(console.error);
-
-    getTrend()
-      .then((res) => setTrend(res.data))
-      .catch(console.error);
+    fetchBugs().then(setBugs).catch(console.error);
   }, []);
 
-  const severityCounts = {
-    High: severity?.high || 0,
-    Medium: severity?.medium || 0,
-    Low: severity?.low || 0,
-  };
-  const severityMax = Math.max(1, ...Object.values(severityCounts));
+  const dashboardData = useMemo(() => {
+    const days = getRangeDays(range);
+    const currentDays = buildDaySeries(days);
+    const currentStart = currentDays[0];
 
-  const trendNew = trend.map((t) => t.created || 0);
-  const trendResolved = trend.map((t) => t.resolved || 0);
-  const days = trend.map((t) =>
+    const previousEnd = new Date(currentStart);
+    previousEnd.setDate(previousEnd.getDate() - 1);
+    const previousStart = new Date(previousEnd);
+    previousStart.setDate(previousStart.getDate() - (days - 1));
+    previousStart.setHours(0, 0, 0, 0);
+
+    const severityCounts = { High: 0, Medium: 0, Low: 0 };
+    const trendBuckets = currentDays.map((day) => ({
+      day: day.toISOString(),
+      created: 0,
+      resolved: 0,
+    }));
+
+    let totalCurrent = 0;
+    let totalPrevious = 0;
+    let resolvedCurrent = 0;
+    let resolvedPrevious = 0;
+    let pendingCurrent = 0;
+    let pendingPrevious = 0;
+    let overdueCurrent = 0;
+    let overduePrevious = 0;
+    let totalOverall = 0;
+    let resolvedOverall = 0;
+    let pendingOverall = 0;
+    let overdueOverall = 0;
+
+    const now = new Date();
+
+    bugs.forEach((bug) => {
+      const createdDate = parseBugDate(bug);
+      const priority = String(bug.Priority || "").toLowerCase();
+      const status = String(bug.Status || "");
+      const isResolved = isResolvedStatus(status);
+      const isPending = isPendingStatus(status);
+
+      totalOverall += 1;
+      if (isResolved) {
+        resolvedOverall += 1;
+      }
+      if (isPending) {
+        pendingOverall += 1;
+      }
+
+      if (priority === "high" || priority === "critical") {
+        severityCounts.High += 1;
+      } else if (priority === "medium") {
+        severityCounts.Medium += 1;
+      } else {
+        severityCounts.Low += 1;
+      }
+
+      if (isPending && priority === "critical") {
+        overdueOverall += 1;
+      }
+
+      if (!createdDate) {
+        return;
+      }
+
+      const createdDay = startOfDay(createdDate);
+
+      if (createdDay >= currentStart) {
+        totalCurrent += 1;
+        if (isResolved) {
+          resolvedCurrent += 1;
+        }
+        if (isPending) {
+          pendingCurrent += 1;
+        }
+      } else if (createdDay >= previousStart && createdDay <= previousEnd) {
+        totalPrevious += 1;
+        if (isResolved) {
+          resolvedPrevious += 1;
+        }
+        if (isPending) {
+          pendingPrevious += 1;
+        }
+      }
+
+      const ageInDays = Math.floor(
+        (startOfDay(now).getTime() - createdDay.getTime()) / 86400000,
+      );
+      const isOverdue = isPending && ageInDays > 7;
+
+      if (isOverdue && createdDay >= currentStart) {
+        overdueCurrent += 1;
+      } else if (
+        isOverdue &&
+        createdDay >= previousStart &&
+        createdDay <= previousEnd
+      ) {
+        overduePrevious += 1;
+      }
+
+      const trendIndex = currentDays.findIndex(
+        (day) => day.getTime() === createdDay.getTime(),
+      );
+      if (trendIndex >= 0) {
+        trendBuckets[trendIndex].created += 1;
+        if (isResolved) {
+          trendBuckets[trendIndex].resolved += 1;
+        }
+      }
+    });
+
+    return {
+      summary: {
+        total: totalOverall,
+        resolved: resolvedOverall,
+        pending: pendingOverall,
+        overdue: overdueOverall,
+        totalDelta: percentageChange(totalCurrent, totalPrevious),
+        resolvedDelta: percentageChange(resolvedCurrent, resolvedPrevious),
+        pendingDelta: percentageChange(pendingCurrent, pendingPrevious),
+        overdueDelta: percentageChange(overdueCurrent, overduePrevious),
+      },
+      severityCounts,
+      trend: trendBuckets,
+    };
+  }, [bugs, range]);
+
+  const severityMax = Math.max(
+    1,
+    ...Object.values(dashboardData.severityCounts),
+  );
+
+  const trendNew = dashboardData.trend.map((t) => t.created || 0);
+  const trendResolved = dashboardData.trend.map((t) => t.resolved || 0);
+  const days = dashboardData.trend.map((t) =>
     new Date(t.day).toLocaleDateString("en-US", { weekday: "short" }),
   );
   const w = 720;
@@ -94,7 +283,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <StatsCards bugs={counts || []} />
+      <StatsCards summary={dashboardData.summary} />
 
       <div className={styles.grid2}>
         <section className={styles.section}>
@@ -103,8 +292,8 @@ function Dashboard() {
           </div>
           <div className={styles.chartBox}>
             <svg width="100%" height="100%" viewBox={`0 0 ${w} ${h}`}>
-              {ticks.map((t) => (
-                <g key={t}>
+              {ticks.map((t, index) => (
+                <g key={`${t}-${index}`}>
                   <line
                     x1={pad}
                     x2={w - pad}
@@ -134,7 +323,7 @@ function Dashboard() {
 
               {days.map((d, i) => (
                 <text
-                  key={d}
+                  key={`${d}-${i}`}
                   x={x(i)}
                   y={h - 6}
                   textAnchor="middle"
@@ -161,20 +350,22 @@ function Dashboard() {
             <div className={styles.chartTitle}>Bugs by Severity</div>
           </div>
           <div className={styles.barList}>
-            {Object.entries(severityCounts).map(([label, value]) => (
-              <div key={label} className={styles.barRow}>
-                <div className={styles.barLabel}>{label}</div>
-                <div className={styles.barTrack}>
-                  <div
-                    className={styles.barFill}
-                    style={{
-                      width: `${Math.round((value / severityMax) * 100)}%`,
-                    }}
-                  />
+            {Object.entries(dashboardData.severityCounts).map(
+              ([label, value]) => (
+                <div key={label} className={styles.barRow}>
+                  <div className={styles.barLabel}>{label}</div>
+                  <div className={styles.barTrack}>
+                    <div
+                      className={styles.barFill}
+                      style={{
+                        width: `${Math.round((value / severityMax) * 100)}%`,
+                      }}
+                    />
+                  </div>
+                  <div className={styles.barValue}>{value}</div>
                 </div>
-                <div className={styles.barValue}>{value}</div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </section>
       </div>

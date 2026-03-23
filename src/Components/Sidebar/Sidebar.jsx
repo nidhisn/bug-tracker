@@ -137,7 +137,6 @@ function Sidebar({ currentPage, onChangePage }) {
         {makeItem("kanban", "Kanban Board", "kanban")}
         {makeItem("projects", "Projects", "projects")}
         {makeItem("team", "Team", "team")}
-        {makeItem("settings", "Settings", "settings", false)}
       </ul>
     </aside>
   );

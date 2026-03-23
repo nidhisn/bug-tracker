@@ -1,7 +1,13 @@
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .bug-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  min-width: 760px;
 }
 
 .bug-table thead {
@@ -76,6 +82,23 @@
   font-weight: 600;
 }
 
+.statusSelect {
+  min-width: 132px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #dfe1e6;
+  background: #ffffff;
+  color: #172b4d;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.statusSelect:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
 .status_open {
   background: #fef3c7;
   color: #92400e;
@@ -145,4 +168,22 @@
   text-align: center;
   padding: 24px 0;
   color: #6b778c;
+}
+
+@media (max-width: 640px) {
+  .bug-table th,
+  .bug-table td {
+    padding: 10px 12px;
+  }
+
+  .issueTitle {
+    font-size: 0.86rem;
+  }
+
+  .issueKey,
+  .priorityText,
+  .statusBadge,
+  .statusSelect {
+    font-size: 0.74rem;
+  }
 }

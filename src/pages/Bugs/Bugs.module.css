@@ -88,13 +88,125 @@
   font-weight: 600;
 }
 
+.viewHint {
+  margin: 0 0 12px 0;
+  font-size: 0.82rem;
+  color: #6b778c;
+}
+
+.activeFilters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.filterChip {
+  border: none;
+  border-radius: 999px;
+  background: #f2f6fd;
+  padding: 6px 10px 6px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.filterChipText {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #bcd4f7;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.filterChipClose {
+  color: #9aa5b1;
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .card {
+  position: relative;
   margin-top: 14px;
   padding: 14px 16px 0 16px;
   border-radius: 18px;
   background: #ffffff;
   border: 1px solid #dfe1e6;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.06);
+  overflow: visible;
+}
+
+.filterOverlay {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 20;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 16px;
+  }
+
+  .headerRow {
+    flex-direction: column;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .filterOverlay {
+    position: static;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .pageTitle {
+    font-size: 1.2rem;
+  }
+
+  .pageSubtitle {
+    font-size: 0.82rem;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tabButton,
+  .tabButtonActive {
+    flex: 1;
+    text-align: center;
+    padding: 8px 10px;
+  }
+
+  .card {
+    padding: 12px 12px 0;
+  }
+
+  .activeFilters {
+    gap: 8px;
+  }
+
+  .filterChip {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .filtersRow {
@@ -124,4 +236,3 @@
   font-size: 0.8rem;
   color: #172b4d;
 }
-

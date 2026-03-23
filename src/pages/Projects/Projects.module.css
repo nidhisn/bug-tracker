@@ -101,3 +101,31 @@
   font-weight: 600;
 }
 
+@media (max-width: 720px) {
+  .page {
+    padding: 16px;
+  }
+
+  .headerRow {
+    flex-direction: column;
+  }
+
+  .primaryButton {
+    width: 100%;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .cardHeader,
+  .metaRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

@@ -84,6 +84,14 @@
 }
 
 @media (max-width: 720px) {
+  .page {
+    padding: 16px;
+  }
+
+  .headerRow {
+    flex-direction: column;
+  }
+
   .row {
     grid-template-columns: 1fr;
     align-items: flex-start;

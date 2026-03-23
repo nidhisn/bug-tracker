@@ -100,3 +100,43 @@
 .navItemActive .icon {
   color: #ffffff;
 }
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    padding: 12px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .brand {
+    padding-bottom: 12px;
+  }
+
+  .navList {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .navItem,
+  .navItemActive,
+  .navItemDisabled {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .brandName {
+    font-size: 1.05rem;
+  }
+
+  .navItem,
+  .navItemActive,
+  .navItemDisabled {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+    justify-content: center;
+  }
+}

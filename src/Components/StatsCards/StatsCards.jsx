@@ -79,44 +79,35 @@ function Icon({ name }) {
   return null;
 }
 
-function StatsCards({ bugs }) {
-  const total = bugs.length;
-  const pending = bugs.filter(
-    (b) => String(b.Status || "").toLowerCase() !== "closed",
-  ).length;
-  const resolved = total - pending;
-  const overdue = bugs.filter(
-    (b) => String(b.Priority || "").toLowerCase() === "critical",
-  ).length;
-
+function StatsCards({ summary }) {
   const cards = [
     {
       label: "Total Bugs",
-      value: total,
+      value: summary?.total ?? 0,
       icon: "total",
       tone: "purple",
-      delta: "+12.5%",
+      delta: summary?.totalDelta ?? "0%",
     },
     {
       label: "Resolved",
-      value: resolved,
+      value: summary?.resolved ?? 0,
       icon: "resolved",
       tone: "green",
-      delta: "+18.2%",
+      delta: summary?.resolvedDelta ?? "0%",
     },
     {
       label: "Pending",
-      value: pending,
+      value: summary?.pending ?? 0,
       icon: "pending",
       tone: "amber",
-      delta: "-2.4%",
+      delta: summary?.pendingDelta ?? "0%",
     },
     {
       label: "Overdue",
-      value: overdue,
+      value: summary?.overdue ?? 0,
       icon: "overdue",
       tone: "red",
-      delta: "+4.1%",
+      delta: summary?.overdueDelta ?? "0%",
     },
   ];
 
@@ -141,7 +132,7 @@ function StatsCards({ bugs }) {
             >
               {c.delta}
             </span>
-            <span className={styles.deltaText}>vs last month</span>
+            <span className={styles.deltaText}>vs previous period</span>
           </div>
         </div>
       ))}

@@ -2,26 +2,28 @@ import { useState } from "react";
 import { addBug } from "../../services/sheetService";
 import styles from "./Create.module.css";
 
-function Create({ open, onClose }) {
+const INITIAL_FORM = {
+  Bug_ID: "",
+  Title: "",
+  Module: "",
+  Priority: "",
+  Status: "",
+  Assigned_To: "",
+  Environment: "",
+  Build_Version: "",
+  Steps_to_Reproduce: "",
+  Expected_Result: "",
+  Actual_Result: "",
+  Reported_By: "",
+  Comments: "",
+};
+
+function Create({ open, onClose, onCreated }) {
   const priorityOptions = ["Low", "Medium", "High"];
   const statusOptions = ["Open", "In Progress", "Closed"];
   const environmentOptions = ["dev", "qa", "prod"];
-
-  const [form, setForm] = useState({
-    Bug_ID: "",
-    Title: "",
-    Module: "",
-    Priority: "",
-    Status: "",
-    Assigned_To: "",
-    Environment: "",
-    Build_Version: "",
-    Steps_to_Reproduce: "",
-    Expected_Result: "",
-    Actual_Result: "",
-    Reported_By: "",
-    Comments: "",
-  });
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!open) return null;
 
@@ -34,15 +36,19 @@ function Create({ open, onClose }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
 
     try {
-      await addBug(form);
+      const createdBug = await addBug(form);
+      onCreated?.(createdBug || form);
+      setForm(INITIAL_FORM);
+      onClose();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
+    } finally {
+      setIsSaving(false);
     }
-
-    onClose();
   };
 
   return (
@@ -213,12 +219,13 @@ function Create({ open, onClose }) {
               type="button"
               className={styles.secondary}
               onClick={onClose}
+              disabled={isSaving}
             >
               Cancel
             </button>
 
-            <button type="submit" className={styles.primary}>
-              Create Bug
+            <button type="submit" className={styles.primary} disabled={isSaving}>
+              {isSaving ? "Saving..." : "Save Bug"}
             </button>
           </div>
         </form>

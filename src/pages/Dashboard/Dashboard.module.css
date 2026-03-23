@@ -196,7 +196,51 @@
 }
 
 @media (max-width: 980px) {
+  .page {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
   .grid2 {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .headerTitle {
+    font-size: 1.35rem;
+  }
+
+  .headerSubtitle {
+    font-size: 0.84rem;
+  }
+
+  .rangeSelect,
+  .generateButton {
+    width: 100%;
+  }
+
+  .section {
+    padding: 16px;
+  }
+
+  .chartBox {
+    height: 220px;
+  }
+
+  .barList {
+    gap: 22px;
+  }
+
+  .barRow {
+    grid-template-columns: 58px 1fr 32px;
   }
 }
